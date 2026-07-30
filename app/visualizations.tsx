@@ -130,7 +130,7 @@ export function ClimateD3() {
             </text>
             <text
               className="d3-note"
-              x={index === 0 ? 0 : compact ? -8 : 0}
+              x={index === 0 ? (compact ? 6 : 10) : compact ? -8 : 0}
               y={index === 0 ? -4 : 45}
               textAnchor={index === 0 ? "start" : "middle"}
             >
@@ -148,7 +148,7 @@ export function ClimateD3() {
 
         <g transform={`translate(${x(2023.45)},${y(94)})`}>
           <text className="d3-callout" textAnchor="middle">−21 points</text>
-          <text className="d3-note" y={16} textAnchor="middle">observed reduction</text>
+          <text className="d3-note" x={10} y={16} textAnchor="start">observed reduction</text>
         </g>
 
         <g transform={`translate(${margin.left},${height - 27})`}>
@@ -207,7 +207,7 @@ export function WasteD3() {
         <circle cx={x(8.1)} cy={286} r={6} fill="#f5f3ee" stroke="#008767" strokeWidth={2} />
         <text x={x(8.1)} y={270} textAnchor="middle" className="d3-callout">8.1%</text>
         <text x={x(0)} y={316} textAnchor="start" className="d3-note">0% baseline</text>
-        <text x={x(10)} y={316} textAnchor="end" className="d3-note">10% target</text>
+        <text x={x(10) + 10} y={334} textAnchor="start" className="d3-note">10% target</text>
       </svg>
     </div>
   );
