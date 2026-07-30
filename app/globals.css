@@ -1,6 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Work+Sans:wght@400;500;600;700&display=swap');
-@import "tailwindcss";
-
 :root { --paper: #f5f3ee; --surface: #fffdf9; --ink: #31261d; --muted: #716b65; --heritage: #002d72; --homewood: #008767; --forest: #275e3d; --gold: #f1c400; --warning: #cf4520; --rule: rgba(49,38,29,.18); --ease-enter: cubic-bezier(.22,1,.36,1); }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -69,6 +67,7 @@ h1 em, h2 em { color: var(--heritage); font-style: italic; }
 .leader { fill: none; stroke-width: 1.2; }
 .leader-blue { stroke: var(--heritage); }
 .leader-green { stroke: var(--homewood); }
+.food-hyperlocal { fill: var(--heritage); }
 .food-d3 { margin-top: 2px; }
 .food-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; border-top: 1px solid var(--rule); padding-top: 18px; }
 .d3-bullet > span { display: block; color: var(--muted); font-size: 10px; }

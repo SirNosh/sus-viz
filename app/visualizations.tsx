@@ -146,7 +146,7 @@ export function ClimateD3() {
           <text className="d3-note" x={0} y={-13} textAnchor="end">2040 target</text>
         </g>
 
-        <g transform={`translate(${x(2023)},${y(88)})`}>
+        <g transform={`translate(${x(2023.45)},${y(94)})`}>
           <text className="d3-callout" textAnchor="middle">−21 points</text>
           <text className="d3-note" y={16} textAnchor="middle">observed reduction</text>
         </g>
@@ -243,7 +243,7 @@ export function FoodD3() {
           d={callout([[centerX - hyperR * 0.72, centerY - hyperR * 0.34], [centerX - outerR - 18, compact ? 296 : 112], [leftTextX + (compact ? 0 : 118), labelY]]) ?? ""}
           className="leader leader-blue"
         />
-        <text x={leftTextX} y={labelY} className="d3-callout">8% hyperlocal</text>
+        <text x={leftTextX} y={labelY} className="d3-callout food-hyperlocal">8% hyperlocal</text>
         <text x={leftTextX} y={labelY + 17} className="d3-note">within 25 miles</text>
 
         <path
@@ -389,13 +389,18 @@ export function BuiltEnvironment3D() {
           ...Array.from({ length: 9 }, () => ({ color: 0xf1c400, height: 1.05 })),
           { color: 0x002d72, height: 1.65 },
         ];
+        const buildingPositions: Array<[number, number]> = [
+          [-2.55, -2.55], [-1.25, -2.5], [0.05, -2.55], [1.35, -2.45], [2.5, -2.5],
+          [-2.55, -0.95], [-1.05, -1.15], [0.55, -0.95], [2.2, -1.05],
+          [-2.45, 0.55], [-1.1, 0.55], [0.25, 0.8], [1.55, 0.55], [2.55, 0.85],
+          [-2.5, 2.25], [-1.15, 2.05], [0.25, 2.4], [1.65, 2.05], [2.55, 2.4],
+        ];
         levels.forEach((level, index) => {
-          const row = Math.floor(index / 5);
-          const col = index % 5;
           const geometry = new THREE.BoxGeometry(0.38, level.height + (index % 3) * 0.15, 0.38);
           const material = new THREE.MeshStandardMaterial({ color: level.color, roughness: 0.68, metalness: 0.02 });
           const building = new THREE.Mesh(geometry, material);
-          building.position.set(-2.55 + col * 0.55, level.height / 2 + 0.03, -2.3 + row * 0.58);
+          const [x, z] = buildingPositions[index];
+          building.position.set(x, level.height / 2 + 0.03, z);
           building.castShadow = true;
           building.receiveShadow = true;
           campus.add(building);
@@ -537,9 +542,14 @@ function BuiltIsometricFallback({ canopyMask }: { canopyMask: boolean[] }) {
       polygon: points([project(x, z), project(x + 0.92, z), project(x + 0.92, z + 0.92), project(x, z + 0.92)]),
     };
   }).sort((a, b) => a.depth - b.depth);
+  const buildingPositions: Array<[number, number]> = [
+    [0.6, 0.6], [2.6, 0.8], [4.6, 0.6], [6.6, 0.8], [8.5, 0.6],
+    [0.8, 3], [3, 2.7], [5.4, 3.1], [8.1, 2.8],
+    [0.5, 5.4], [2.5, 5.2], [4.6, 5.7], [6.7, 5.2], [8.6, 5.6],
+    [0.8, 8.1], [2.8, 7.8], [4.8, 8.4], [6.9, 7.9], [8.7, 8.5],
+  ];
   const buildings = Array.from({ length: 19 }, (_, index) => {
-    const x = 0.6 + (index % 5) * 1.28;
-    const z = 0.7 + Math.floor(index / 5) * 1.3;
+    const [x, z] = buildingPositions[index];
     const h = index === 18 ? 2.3 : index >= 9 ? 1.35 + (index % 3) * 0.2 : 0.95 + (index % 3) * 0.16;
     const color = index === 18 ? "#002d72" : index >= 9 ? "#f1c400" : "#aeb3b8";
     const side = index === 18 ? "#001f50" : index >= 9 ? "#b99100" : "#787f85";

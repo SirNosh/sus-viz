@@ -13,3 +13,6 @@
 - Added D3-driven waste flow and mobility route visualizations. Added a Three.js 3D campus field encoding 19 LEED buildings and a 39-of-100 canopy field, plus a D3 isometric 3D fallback for WebGL-restricted browsers.
 - Ran desktop and mobile browser QA. Fixed a ResizeObserver feedback loop and a runaway canvas height discovered during that pass; verified no label collisions, error overlays, or horizontal overflow at the tested breakpoints.
 - Generated and wired a project-specific social preview card using the finished editorial and isometric visual language. Production build, lint, and server-render tests pass after the update.
+- Applied the final visual refinements: moved the Climate “−21 points” annotation right and above the observed line, colored “8% hyperlocal” Heritage Blue, and distributed all 19 LEED buildings across the full 3D field in both WebGL and isometric fallback views.
+- Replaced the Codex Sites/vinext worker scaffold with a static Vite entry using the `/sus-viz/` base path. Added a GitHub Pages Actions workflow and updated metadata for `https://sirnosh.github.io/sus-viz/`.
+- Removed the now-unused Codex/Cloudflare/Next/Drizzle deployment files and dependencies. The static build, TypeScript check, ESLint, and built-artifact test pass.

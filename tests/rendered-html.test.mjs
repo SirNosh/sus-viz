@@ -1,32 +1,21 @@
 import assert from "node:assert/strict";
+import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
-async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
+test("builds the static GitHub Pages application", async () => {
+  const html = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+  const assetNames = await readdir(new URL("../dist/assets/", import.meta.url));
+  const scriptNames = assetNames.filter((name) => name.endsWith(".js"));
+  const scripts = await Promise.all(
+    scriptNames.map((name) => readFile(new URL(`../dist/assets/${name}`, import.meta.url), "utf8")),
   );
-}
+  const javascript = scripts.join("\n");
 
-test("server-renders the sustainability story", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
-  const html = await response.text();
   assert.match(html, /The Distance Remaining/);
-  assert.match(html, /Progress is measurable/);
-  assert.match(html, /2024 SNAPSHOT/);
-  assert.match(html, /Explore data/);
-  assert.match(html, /Scope 1 and 2 emissions reduction/);
-  assert.match(html, /Waste diverted from incineration and landfill/);
-  assert.match(html, /D3 line chart showing emissions indexed at 100/);
-  assert.match(html, /Interactive 3D campus field encoding 19 LEED-certified buildings/);
-  assert.match(html, /<canvas/);
-  assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+  assert.match(html, /\/sus-viz\/assets\//);
+  assert.match(html, /https:\/\/sirnosh\.github\.io\/sus-viz\/og\.png/);
+  assert.match(javascript, /Progress is measurable/);
+  assert.match(javascript, /D3 line chart showing emissions indexed at 100/);
+  assert.match(javascript, /Interactive 3D campus field encoding 19 LEED-certified buildings/);
+  assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });
