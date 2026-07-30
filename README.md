@@ -4,14 +4,6 @@ An independent student visualization of Johns Hopkins sustainability progress an
 
 Live deployment: [sirnosh.github.io/sus-viz](https://sirnosh.github.io/sus-viz/)
 
-## Screenshots
-
-![Story landing page](docs/screenshots/story-hero.png)
-
-![Climate chart](docs/screenshots/climate-chart.png)
-
-![Food sourcing visualization](docs/screenshots/food-sourcing.png)
-
 ## Purpose
 
 The site helps a reader move from the 2022 baseline and 2024 measurement to the 2030 and 2040 commitments without implying that every metric is on a known trajectory. Story mode provides the narrative reading; Explore Data exposes the metric definitions, comparisons, and source links.
