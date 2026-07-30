@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { scaleLinear, scaleSqrt } from "d3-scale";
-import {
-  area,
-  curveBumpX,
-  curveMonotoneX,
-  line,
-} from "d3-shape";
+import { area, curveBumpX, curveMonotoneX, line, scaleLinear, scaleSqrt } from "d3";
 
 function useChartWidth(initialWidth = 860) {
   const ref = useRef<HTMLDivElement>(null);
@@ -16,17 +10,29 @@ function useChartWidth(initialWidth = 860) {
   useEffect(() => {
     if (!ref.current) return;
     let frame = 0;
-    const observer = new ResizeObserver(([entry]) => {
+    const element = ref.current;
+    element.classList.add("reveal-on-entry");
+    const resizeObserver = new ResizeObserver(([entry]) => {
       const nextWidth = Math.max(280, Math.round(entry.contentRect.width));
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         setWidth((currentWidth) => currentWidth === nextWidth ? currentWidth : nextWidth);
       });
     });
-    observer.observe(ref.current);
+    let revealObserver: IntersectionObserver | null = null;
+    revealObserver = "IntersectionObserver" in window ? new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        element.classList.add("is-visible");
+        revealObserver?.disconnect();
+      }
+    }, { threshold: 0.18 }) : null;
+    resizeObserver.observe(element);
+    if (revealObserver) revealObserver.observe(element);
+    else element.classList.add("is-visible");
     return () => {
       cancelAnimationFrame(frame);
-      observer.disconnect();
+      resizeObserver.disconnect();
+      revealObserver?.disconnect();
     };
   }, []);
 
@@ -55,8 +61,9 @@ export function HorizonVisualization() {
         aria-label="Target horizon from the 2022 baseline through the 2024 measurement to commitments in 2030 and net zero in 2040."
       >
         <line x1={x(2022)} x2={x(2040)} y1={lineY} y2={lineY} stroke="rgba(49,38,29,.18)" />
-        <line x1={x(2022)} x2={x(2024)} y1={lineY} y2={lineY} stroke="#008767" strokeWidth={2} />
+        <line className="horizon-observed-line" pathLength={1} x1={x(2022)} x2={x(2024)} y1={lineY} y2={lineY} stroke="#008767" strokeWidth={2} />
         <line
+          className="horizon-target-line"
           x1={x(2024)}
           x2={x(2040)}
           y1={lineY}
@@ -113,8 +120,8 @@ export function ClimateD3() {
             <text x={margin.left - 12} y={y(tick) + 4} textAnchor="end" className="d3-axis-label">{tick}</text>
           </g>
         ))}
-        <path d={path(observed) ?? ""} fill="none" stroke="#008767" strokeWidth={3} />
-        <path d={path(future) ?? ""} fill="none" stroke="#d6aa00" strokeWidth={2} strokeDasharray="7 7" />
+        <path className="climate-observed-path" pathLength={1} d={path(observed) ?? ""} fill="none" stroke="#008767" strokeWidth={3} />
+        <path className="climate-target-path" d={path(future) ?? ""} fill="none" stroke="#d6aa00" strokeWidth={2} strokeDasharray="7 7" />
 
         {observed.map((point, index) => (
           <g key={point.year} transform={`translate(${x(point.year)},${y(point.value)})`}>
@@ -186,8 +193,8 @@ export function WasteD3() {
   return (
     <div className="d3-chart waste-d3" ref={ref}>
       <svg width={width} height={height} role="img" aria-label="D3 material-flow chart showing 37 of 100 waste units diverted and a 2030 target split at 50 units.">
-        <path d={divertedPath} fill="#008767" opacity={0.95} />
-        <path d={remainingPath} fill="#d7d0c4" />
+        <path className="waste-stream-diverted" d={divertedPath} fill="#008767" opacity={0.95} />
+        <path className="waste-stream-remaining" d={remainingPath} fill="#d7d0c4" />
         <line x1={x(50)} x2={x(50)} y1={44} y2={188} stroke="#d6aa00" strokeWidth={2} />
         <text x={x(50) + 8} y={39} className="d3-callout">50% target</text>
         <text x={x(50) + 8} y={55} className="d3-note">2030 commitment</text>
@@ -221,7 +228,6 @@ export function FoodD3() {
   const centerY = compact ? 158 : 196;
   const radiusScale = scaleSqrt().domain([0, 250]).range([0, compact ? 116 : 152]);
   const outerR = radiusScale(250);
-  const localR = outerR * 0.72;
   const hyperR = Math.max(43, radiusScale(25));
   const callout = line<[number, number]>().curve(curveBumpX);
 
@@ -232,9 +238,8 @@ export function FoodD3() {
   return (
     <div className="d3-chart food-d3" ref={ref}>
       <svg width={width} height={height} role="img" aria-label="D3 sourcing-distance instrument: 8 percent hyperlocal food within 25 miles, another 22 percent local within 250 miles, and 70 percent outside the local category.">
-        <circle cx={centerX} cy={centerY} r={outerR} fill="none" stroke="rgba(49,38,29,.18)" />
-        <circle cx={centerX} cy={centerY} r={localR} fill="rgba(0,135,103,.05)" stroke="#008767" strokeWidth={1.5} />
-        <circle cx={centerX} cy={centerY} r={hyperR} fill="rgba(0,45,114,.08)" stroke="#002d72" strokeWidth={1.5} />
+        <circle className="food-radius food-radius-250" pathLength={1} cx={centerX} cy={centerY} r={outerR} fill="none" stroke="rgba(49,38,29,.18)" />
+        <circle className="food-radius food-radius-25" pathLength={1} cx={centerX} cy={centerY} r={hyperR} fill="rgba(0,45,114,.08)" stroke="#002d72" strokeWidth={1.5} />
         <circle cx={centerX} cy={centerY} r={4} fill="#f1c400" />
         <text x={centerX} y={centerY + 17} textAnchor="middle" className="d3-origin">HOMEWOOD</text>
         <text x={centerX} y={centerY - outerR - 14} textAnchor="middle" className="d3-label">SOURCING DISTANCE</text>
@@ -247,7 +252,7 @@ export function FoodD3() {
         <text x={leftTextX} y={labelY + 17} className="d3-note">within 25 miles</text>
 
         <path
-          d={callout([[centerX + localR * 0.78, centerY - localR * 0.38], [centerX + outerR + 18, compact ? 296 : 112], [rightTextX, labelY]]) ?? ""}
+          d={callout([[centerX + outerR * 0.78, centerY - outerR * 0.38], [centerX + outerR + 18, compact ? 296 : 112], [rightTextX, labelY]]) ?? ""}
           className="leader leader-green"
         />
         <text x={rightTextX} y={labelY} className="d3-callout">22% additional local</text>
@@ -255,6 +260,10 @@ export function FoodD3() {
 
         <text x={compact ? width / 2 : centerX} y={compact ? 422 : 384} textAnchor="middle" className="d3-callout">30% local in total · 70% outside local</text>
       </svg>
+      <div className="food-share-strip" aria-label="Local sourcing share: 8 percent hyperlocal, 22 percent additional local, 70 percent outside local">
+        <div className="food-share-track" aria-hidden="true"><i className="share-hyperlocal" /><i className="share-additional" /><i className="share-outside" /></div>
+        <div className="food-share-labels"><span>8% hyperlocal</span><span>22% additional local</span><span>70% outside local</span></div>
+      </div>
       <div className="food-bars">
         <D3Bullet label="Sustainable dining spend" current={20} target={35} currentLabel="20%" targetLabel="35% by 2030" />
         <D3Bullet label="Food procurement emissions" current={5690} target={4267.5} max={6500} direction="decrease" currentLabel="5,690" targetLabel="4,267.5 target" />
@@ -316,13 +325,13 @@ export function MobilityD3() {
   return (
     <div className="d3-chart mobility-d3" ref={ref}>
       <svg width={width} height={height} role="img" aria-label="D3 route connecting four distinct campus mobility measures.">
-        <path d={routePath} fill="none" stroke="#002d72" strokeWidth={2.5} />
+        <path className="mobility-route-path" pathLength={1} d={routePath} fill="none" stroke="#002d72" strokeWidth={2.5} />
         {routePoints.map((point, index) => {
           const station = stations[index];
           const above = compact ? false : index % 2 === 0;
           const textY = compact ? point.y - 18 : point.y + (above ? -42 : 48);
           return (
-            <g key={station.label}>
+            <g className={`mobility-station mobility-station-${index}`} key={station.label}>
               <circle cx={point.x} cy={point.y} r={11} fill="#f5f3ee" stroke="#f1c400" strokeWidth={2} />
               <circle cx={point.x} cy={point.y} r={4} fill="#002d72" />
               <text x={point.x} y={textY} textAnchor="middle" className="route-value">{station.value}</text>
@@ -341,6 +350,24 @@ export function BuiltEnvironment3D() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [failed, setFailed] = useState(false);
   const canopyMask = useMemo(() => Array.from({ length: 100 }, (_, index) => ((index * 37) % 100) < 39), []);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+    element.classList.add("reveal-on-entry");
+    if (!("IntersectionObserver" in window)) {
+      element.classList.add("is-visible");
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        element.classList.add("is-visible");
+        observer.disconnect();
+      }
+    }, { threshold: 0.18 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let disposed = false;

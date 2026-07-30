@@ -17,5 +17,10 @@ test("builds the static GitHub Pages application", async () => {
   assert.match(javascript, /Progress is measurable/);
   assert.match(javascript, /D3 line chart showing emissions indexed at 100/);
   assert.match(javascript, /Interactive 3D campus field encoding 19 LEED-certified buildings/);
+  assert.match(javascript, /Neither has a universitywide numeric target in the cited progress report/);
+  assert.match(javascript, /Net zero is not equivalent to a linear zero-emissions endpoint/);
+  assert.match(javascript, /Not calculated/);
+  assert.match(javascript, /food-share-strip/);
+  assert.match(javascript, /aria-pressed/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/i);
 });

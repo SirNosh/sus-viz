@@ -19,3 +19,4 @@
 - Separated the Materials 0% baseline and 10% target labels vertically, and nudged the Climate 2022 baseline and observed reduction notes right without moving their data marks.
 - Published commit `c326d47` through GitHub Pages; the deployment passed and the live page returned HTTP 200 with the expected title and asset base path.
 - Removed the unrequested canopy-target disclaimer from the Materials 3D legend and restored the `10% target` annotation to the shared label baseline while retaining its horizontal separation.
+- Corrected the built-environment copy and net-zero normalized view, separated food distance circles from purchasing shares, clarified the independent-project header, added one-time section-entry motion and `aria-pressed` states, expanded the README with screenshots and methodology, and imported D3 functions from the declared aggregate dependency.
