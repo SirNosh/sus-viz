@@ -25,5 +25,8 @@ test("server-renders the sustainability story", async () => {
   assert.match(html, /Explore data/);
   assert.match(html, /Scope 1 and 2 emissions reduction/);
   assert.match(html, /Waste diverted from incineration and landfill/);
+  assert.match(html, /D3 line chart showing emissions indexed at 100/);
+  assert.match(html, /Interactive 3D campus field encoding 19 LEED-certified buildings/);
+  assert.match(html, /<canvas/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });

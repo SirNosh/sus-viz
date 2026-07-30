@@ -1,6 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import {
+  BuiltEnvironment3D,
+  ClimateD3,
+  FoodD3,
+  HorizonVisualization,
+  MobilityD3,
+  WasteD3,
+} from "./visualizations";
 
 type Category =
   | "Climate"
@@ -320,13 +328,7 @@ function Hero({ onExplore }: { onExplore: () => void }) {
         <p className="hero-deck">A public-data reading of Johns Hopkins’ sustainability targets — where the university stands, what can be compared, and what the numbers do not yet say.</p>
         <div className="hero-actions"><a className="text-link" href="#ledger">Begin the story <span>↓</span></a><button className="outline-button" onClick={onExplore}>Explore all data <span>↗</span></button></div>
       </div>
-      <div className="horizon" aria-label="Sustainability target horizon from 2022 to 2040">
-        <div className="horizon-line"><i className="horizon-observed" /><i className="horizon-future" /></div>
-        <div className="horizon-point point-2022"><b>2022</b><span>baseline</span></div>
-        <div className="horizon-point point-2024"><b>2024</b><span>measurement</span></div>
-        <div className="horizon-point point-2030"><b>2030</b><span>commitments</span></div>
-        <div className="horizon-point point-2040"><b>2040</b><span>net zero</span></div>
-      </div>
+      <HorizonVisualization />
       <p className="disclaimer">Independent student visualization concept using publicly available Johns Hopkins data. Not an official university report.</p>
     </section>
   );
@@ -353,15 +355,7 @@ function ClimateVisual() {
   return (
     <div className="visual-frame climate-frame">
       <div className="visual-topline"><span>INDEXED SCOPE 1 + 2 EMISSIONS</span><span>2022 = 100</span></div>
-      <div className="climate-chart" role="img" aria-label="Emissions index descends from 100 in 2022 to 79 in 2024, with a dashed target path to zero net emissions in 2040.">
-        <div className="gridline grid-100"><span>100</span></div><div className="gridline grid-50"><span>50</span></div><div className="gridline grid-0"><span>0</span></div>
-        <div className="observed-path" /><div className="target-path" />
-        <div className="chart-dot dot-baseline"><b>100</b><span>2022 baseline</span></div>
-        <div className="chart-dot dot-current"><b>79</b><span>2024 current</span></div>
-        <div className="chart-dot dot-target"><b>0</b><span>2040 target</span></div>
-        <div className="reduction-label"><span>−21 points</span><small>observed reduction</small></div>
-      </div>
-      <div className="visual-foot"><span>Observed segment</span><span className="dash-key">Target path · unobserved interval</span><strong>77% clean electricity <small>context, not a direct net-zero measure</small></strong></div>
+      <ClimateD3 />
     </div>
   );
 }
@@ -370,9 +364,7 @@ function WasteVisual() {
   return (
     <div className="visual-frame waste-frame">
       <div className="visual-topline"><span>100 UNITS OF WASTE</span><span>2024 → 2030</span></div>
-      <div className="waste-flow" role="img" aria-label="37 percent of waste was diverted in 2024 and 63 percent remained for incineration or landfill. The 2030 target is 50 percent diverted."><div className="diverted-stream" /><div className="remaining-stream" /><i className="target-mark"><b>50%</b><span>2030 target</span></i></div>
-      <div className="flow-labels"><span><b>37%</b> diverted</span><span><b>63%</b> incineration or landfill</span></div>
-      <div className="mini-track"><div className="track-meta"><span>Per-capita waste reduction</span><b>8.1% below 2022</b></div><div className="track-line"><i className="track-current" /><i className="track-target" /></div><div className="track-years"><span>0% baseline</span><span>10% target</span></div></div>
+      <WasteD3 />
     </div>
   );
 }
@@ -381,20 +373,17 @@ function FoodVisual() {
   return (
     <div className="visual-frame food-frame">
       <div className="visual-topline"><span>SOURCING RADIUS</span><span>ORIGIN: HOMEWOOD</span></div>
-      <div className="radius-stage" role="img" aria-label="Thirty percent of dining food is sourced within 250 miles, including 8 percent hyperlocal food within 25 miles."><div className="radius radius-outer"><span>outside local · 70%</span></div><div className="radius radius-local"><span>within 250 mi<br /><b>22%</b> additional local</span></div><div className="radius radius-hyper"><span>within 25 mi<br /><b>8% hyperlocal</b></span></div><i className="origin-dot" /></div>
-      <div className="radius-notes"><p><b>30%</b> local food in total</p><p>Local = within 250 miles.<br />Hyperlocal = within 25 miles.</p></div>
-      <div className="food-tracks"><div><span>Sustainable dining spend</span><b>20% <small>/ 35% by 2030</small></b><i><em style={{ width: "57%" }} /></i></div><div><span>Food procurement emissions</span><b>5,690 <small>/ 4,267.5 target</small></b><i className="emissions-track"><em style={{ width: "75%" }} /></i></div></div>
+      <FoodD3 />
     </div>
   );
 }
 
 function BuiltVisual() {
-  const buildings = ["silver", "silver", "silver", "silver", "silver", "silver", "silver", "silver", "silver", "gold", "gold", "gold", "gold", "gold", "gold", "gold", "gold", "gold", "platinum"];
-  return <div className="visual-frame built-frame"><div className="built-half"><div className="visual-topline"><span>THE BUILT SYSTEM</span><span>19 LEED CERTIFIED</span></div><div className="buildings" aria-label="19 LEED-certified buildings: 9 Silver, 9 Gold, and 1 Platinum">{buildings.map((level, index) => <i className={`building ${level}`} key={`${level}-${index}`} aria-hidden="true"><span /></i>)}</div><div className="building-key"><span><i className="key-silver" />9 Silver</span><span><i className="key-gold" />9 Gold</span><span><i className="key-platinum" />1 Platinum</span></div></div><div className="nature-half"><div className="visual-topline"><span>THE LIVING SYSTEM</span><span>NO PUBLISHED TARGET</span></div><div className="canopy-grid" role="img" aria-label="A field representing 39 percent campus tree-canopy coverage">{Array.from({ length: 100 }, (_, index) => <i className={index < 39 ? "filled" : ""} key={index} />)}</div><p><b>39%</b> campus tree-canopy coverage</p></div></div>;
+  return <div className="visual-frame built-frame"><BuiltEnvironment3D /></div>;
 }
 
 function MobilityVisual() {
-  return <div className="visual-frame mobility-frame"><div className="visual-topline"><span>THE ROUTE</span><span>2024 MOBILITY SIGNALS</span></div><div className="route" aria-label="Mobility route linking 1.5 million rides, 5 electric buses, 25 percent alternative commuting, and 24 percent electric or hybrid purchases"><div className="route-line" />{[["1.5M", "shuttle, bus + van rides"], ["5", "electric buses"], ["25%", "alternative commuting"], ["24%", "electric or hybrid purchases"]].map(([value, label], index) => <div className={`route-stop stop-${index + 1}`} key={label}><i>{index === 1 ? "▰" : index + 1}</i><b>{value}</b><span>{label}</span>{index === 3 && <em>≠ future all-electric target</em>}</div>)}</div></div>;
+  return <div className="visual-frame mobility-frame"><div className="visual-topline"><span>THE ROUTE</span><span>2024 MOBILITY SIGNALS</span></div><MobilityD3 /></div>;
 }
 
 function Story({ onExplore, onSelect }: { onExplore: () => void; onSelect: (id: string) => void }) {
