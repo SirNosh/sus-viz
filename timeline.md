@@ -16,3 +16,5 @@
 - Applied the final visual refinements: moved the Climate “−21 points” annotation right and above the observed line, colored “8% hyperlocal” Heritage Blue, and distributed all 19 LEED buildings across the full 3D field in both WebGL and isometric fallback views.
 - Replaced the Codex Sites/vinext worker scaffold with a static Vite entry using the `/sus-viz/` base path. Added a GitHub Pages Actions workflow and updated metadata for `https://sirnosh.github.io/sus-viz/`.
 - Removed the now-unused Codex/Cloudflare/Next/Drizzle deployment files and dependencies. The static build, TypeScript check, ESLint, and built-artifact test pass.
+- Separated the Materials 0% baseline and 10% target labels vertically, and nudged the Climate 2022 baseline and observed reduction notes right without moving their data marks.
+- Published commit `c326d47` through GitHub Pages; the deployment passed and the live page returned HTTP 200 with the expected title and asset base path.
