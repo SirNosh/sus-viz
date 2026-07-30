@@ -207,7 +207,7 @@ export function WasteD3() {
         <circle cx={x(8.1)} cy={286} r={6} fill="#f5f3ee" stroke="#008767" strokeWidth={2} />
         <text x={x(8.1)} y={270} textAnchor="middle" className="d3-callout">8.1%</text>
         <text x={x(0)} y={316} textAnchor="start" className="d3-note">0% baseline</text>
-        <text x={x(10) + 10} y={334} textAnchor="start" className="d3-note">10% target</text>
+        <text x={x(10) + 10} y={316} textAnchor="start" className="d3-note">10% target</text>
       </svg>
     </div>
   );
@@ -511,7 +511,6 @@ export function BuiltEnvironment3D() {
         <span><i className="key-silver" />9 Silver</span>
         <span><i className="key-gold" />9 Gold</span>
         <span><i className="key-platinum" />1 Platinum</span>
-        <span className="no-target">No universitywide canopy target published</span>
       </div>
     </div>
   );
